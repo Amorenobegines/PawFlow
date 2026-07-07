@@ -93,7 +93,7 @@
                     <th>Photo</th>
                     <th>Observations</th>
                     <th>Client</th>
-
+                    <th>Actions</th>
                 </tr>
             </thead>
 

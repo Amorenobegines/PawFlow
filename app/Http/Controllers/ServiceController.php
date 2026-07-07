@@ -60,7 +60,7 @@ class ServiceController extends Controller
     {
         $services = Service::all();
         $service = Service::findOrFail($id);
-        return view('services.index', compact('services', 'service'));
+        return view('services.index', compact('services', 'service'))->with('isEdit', true);
     }
 
     /**
@@ -70,8 +70,7 @@ class ServiceController extends Controller
     {
         $service = Service::findOrFail($id);
         $service->update($request->only(['name', 'type', 'price', 'duration']));
-        Session::flash('success', 'Service updated successfully.');
-        return redirect()->route('services.index');
+        return redirect()->route('services.index')->with('success', 'Service updated successfully.');
     }
 
     /**

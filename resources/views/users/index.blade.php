@@ -67,8 +67,8 @@
 
         <h2>Search users</h2>
         <form action="{{ route('users.index') }}" method="GET" style="margin-bottom: 20px;">
-            <label for="email_filter">Buscar por email:</label>
-            <input type="text" name="email_filter" id="email_filter" value="{{ request('email_filter') }}" placeholder="Escribe el email para filtrar">
+            <label for="role_filter">Buscar por rol:</label>
+            <input type="text" name="role_filter" id="role_filter" value="{{ request('role_filter') }}" placeholder="Escribe el rol para filtrar">
         </form>
 
         <h2>Lista de usuarios</h2>
@@ -84,7 +84,7 @@
             </thead>
             <tbody id="usersTableBody">
                 @foreach ($users as $userItem)
-                    <tr data-email="{{ $userItem->email }}">
+                    <tr data-role="{{ $userItem->role?->name ?? '-' }}">
                         <td>{{ $userItem->name }}</td>
                         <td>{{ $userItem->last_name }}</td>
                         <td>{{ $userItem->email }}</td>
@@ -103,13 +103,13 @@
         </table>
 
         <script>
-            document.getElementById('email_filter').addEventListener('input', function() {
+            document.getElementById('role_filter').addEventListener('input', function() {
                 const filterValue = this.value.toLowerCase();
                 const rows = document.querySelectorAll('#usersTableBody tr');
 
                 rows.forEach(row => {
-                    const email = row.getAttribute('data-email').toLowerCase();
-                    if (email.includes(filterValue)) {
+                    const role = row.getAttribute('data-role').toLowerCase();
+                    if (role.includes(filterValue)) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
