@@ -66,8 +66,7 @@
             <input type="number" name="pet_weight" id="pet_weight" value="{{ old('pet_weight', $pet?->weight ?? '') }}" required><br>
 
             <label for="pet_gender">Pet Gender:</label>
-            <select name="pet_gender" id="pet_gender" required>
-                
+            <select name="pet_gender" id="pet_gender" required>             
                 <option value="Male" {{ old('pet_gender', $pet?->gender ?? '') === 'Male' ? 'selected' : '' }}>Male</option>
                 <option value="Female" {{ old('pet_gender', $pet?->gender ?? '') === 'Female' ? 'selected' : '' }}>Female</option>
             </select><br>
@@ -87,6 +86,12 @@
         @if ($isEdit)
             <p><a href="{{ route('clients.index') }}">Cancel edit</a></p>
         @endif
+
+        <h2>Search Clients</h2>
+        <form action="{{ route('clients.index') }}" method="GET" style="margin-bottom: 20px;">
+            <label for="email_filter">Search by Email:</label>
+            <input type="text" name="email_filter" id="email_filter" value="{{ request('email_filter') }}" placeholder="Escribe el email para filtrar">
+        </form>
 
         <h2>Clients List</h2>
 
@@ -108,9 +113,9 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="clientsTableBody">
                 @foreach ($clients as $clientItem)
-                    <tr>
+                    <tr data-email="{{ $clientItem->email }}">
                         <td>{{ $clientItem->name }}</td>
                         <td>{{ $clientItem->last_name }}</td>
                         <td>{{ $clientItem->phone }}</td>
@@ -170,5 +175,27 @@
                 @endforeach
             </tbody>
         </table>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const input = document.getElementById('email_filter');
+                const rows = Array.from(document.querySelectorAll('#clientsTableBody tr'));
+
+                const applyFilter = () => {
+                    const term = (input?.value || '').trim().toLowerCase();
+
+                    rows.forEach((row) => {
+                        const email = (row.dataset.email || '').toLowerCase();
+                        const matches = !term || email.includes(term);
+                        row.style.display = matches ? '' : 'none';
+                    });
+                };
+
+                if (input) {
+                    input.addEventListener('input', applyFilter);
+                    applyFilter();
+                }
+            });
+        </script>
     </body>
 </html>

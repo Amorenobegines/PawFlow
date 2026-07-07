@@ -24,7 +24,7 @@ class PetController extends Controller
      */
     public function create(Request $request)
     {
-      //  $pets = Pet::all();
+        $pets = Pet::all();
         $clients = Client::all();
         $selectedClientId = $request->query('client_id');
 
@@ -68,7 +68,6 @@ class PetController extends Controller
     {
         $pets = Pet::all();
         $clients = Client::all();
-
         return view('pets.index', compact('pets', 'pet', 'clients'));
     }
 
@@ -92,8 +91,8 @@ class PetController extends Controller
         ]);
 
         $pet->update($request->only(['name', 'breed', 'age', 'weight', 'gender', 'allergic', 'photo', 'observations', 'client_id']));
-        Session::flash('success', 'Pet updated successfully.');
-        return redirect()->route('pets.index');
+       
+        return redirect()->route('pets.index')->with('success', 'Pet updated successfully.');
     }
 
 
@@ -102,8 +101,7 @@ class PetController extends Controller
      */
     public function destroy(Pet $pet)
     {
-        $pet->delete();
-        Session::flash('success', 'Pet deleted successfully.');
-        return redirect()->route('pets.index');
+        $pet->delete(); 
+        return redirect()->route('pets.index')->with('success', 'Pet deleted successfully.');
     }
 }

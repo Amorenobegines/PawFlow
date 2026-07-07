@@ -49,6 +49,12 @@
             <p><a href="{{ route('services.index') }}">Cancel edit</a></p>
         @endif
 
+        <h2>Search Services</h2>
+        <form action="{{ route('services.index') }}" method="GET" style="margin-bottom: 20px;">
+            <label for="search">Search by name:</label>
+            <input type="text" name="search" id="search" value="{{ request('search') }}">           
+        </form>
+
         <h2>Services List</h2>
 
         <table border="1">
@@ -62,41 +68,55 @@
                 </tr>
             </thead>
 
-            <tbody>
-
+            <tbody id="servicesTableBody">
                 @foreach($services as $serviceItem)
 
-                                <tr>
-                                    <td>{{ $serviceItem->name }}</td>
-                                    <td>{{ $serviceItem->type }}</td>
-                                    <td>{{ $serviceItem->price }}</td>
-                                    <td>{{ $serviceItem->duration }}</td>
+                    <tr data-service-id="{{ $serviceItem->id }}">
+                        <td>{{ $serviceItem->name }}</td>
+                        <td>{{ $serviceItem->type }}</td>
+                        <td>{{ $serviceItem->price }}</td>
+                        <td>{{ $serviceItem->duration }}</td>
+                        <td>
+                        <a href="{{ route('services.edit', $serviceItem->id) }}">
+                            <button type="button">Edit</button>
+                        </a>
 
-                                    <td>
+                        <form action="{{ route('services.destroy', $serviceItem->id) }}"
+                        method="POST"
+                        style="display:inline;">
 
-                                        <a href="{{ route('services.edit', $serviceItem->id) }}">
-                                            <button type="button">Edit</button>
-                                        </a>
+                        @csrf
+                        @method('DELETE')
 
-                                        <form action="{{ route('services.destroy', $serviceItem->id) }}"
-                                    method="POST"
-                                    style="display:inline;">
+                        <button type="submit">
+                            Delete
+                        </button>
 
-                                    @csrf
-                                    @method('DELETE')
+                    </form>
 
-                                    <button type="submit">
-                                        Delete
-                                    </button>
-
-                                </form>
-
-                            </td>
-                        </tr>
+                </td>
+            </tr>
 
                     @endforeach
 
             </tbody>
         </table>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const searchInput = document.getElementById('search');
+                const servicesTableBody = document.getElementById('servicesTableBody');
+
+                searchInput.addEventListener('input', function () {
+                    const searchTerm = searchInput.value.toLowerCase();
+
+                    Array.from(servicesTableBody.rows).forEach(row => {
+                        const serviceName = row.cells[0].textContent.toLowerCase();
+                        row.style.display = serviceName.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            });
+        </script>
+
     </body>
 </html>

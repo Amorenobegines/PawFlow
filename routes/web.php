@@ -6,6 +6,7 @@ use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,6 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('pets', PetController::class);
     Route::resource('appointments', AppointmentController::class);
     Route::resource('clients', ClientController::class);
+    Route::resource('users', \App\Http\Controllers\UserController::class);
 });
 
  

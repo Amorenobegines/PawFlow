@@ -10,9 +10,15 @@ class ClientController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clients = Client::with('pets')->get();
+        $query = Client::query();
+
+        if ($request->filled('email_filter')) {
+            $query->where('email', 'like', '%' . $request->input('email_filter') . '%');
+        }
+
+        $clients = $query->with('pets')->get();
 
         return view('clients.index', compact('clients'));
     }

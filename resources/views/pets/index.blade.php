@@ -32,16 +32,16 @@
             @endif
            
             <label for="name">Name:</label>
-            <input type="text" name="name" id="name" value="{{ old('name') }}" required><br>
+            <input type="text" name="name" id="name" value="{{ old('name', $isEdit ? $pet->name : '') }}" required><br>
 
             <label for="breed">Dog Breed:</label>
-            <input type="text" name="breed" id="breed" value="{{ old('breed') }}" required><br>
+            <input type="text" name="breed" id="breed" value="{{ old('breed', $isEdit ? $pet->breed : '') }}" required><br>
 
             <label for="age">Age:</label>
-            <input type="number" name="age" id="age" value="{{ old('age') }}" required><br>
+            <input type="number" name="age" id="age" value="{{ old('age', $isEdit ? $pet->age : '') }}" required><br>
 
             <label for="weight">Weight:</label>
-            <input type="number" name="weight" id="weight" value="{{ old('weight') }}" required><br>
+            <input type="number" name="weight" id="weight" value="{{ old('weight', $isEdit ? $pet->weight : '') }}" required><br>
 
             <label for="gender">Gender:</label>
             <select name="gender" id="gender" required>
@@ -56,7 +56,7 @@
             </select><br>
 
             <label for="observations">Observations:</label>
-            <textarea name="observations" id="observations">{{ old('observations') }}</textarea><br>
+            <textarea name="observations" id="observations">{{ old('observations', $isEdit ? $pet->observations : '') }}</textarea><br>
 
             <label for="client_id">Client:</label>
             <select name="client_id" id="client_id" required>
@@ -65,13 +65,19 @@
                         {{ $client->name }} {{ $client->last_name }} ({{ $client->email }})
                     </option>
                 @endforeach
-            </select><br>
-            <button type="submit">Add Pet</button>
+            </select><br><br>
+            <button type="submit">{{ $isEdit ? 'Update Pet' : 'Add Pet' }}</button>
         </form>
 
         @if ($isEdit)
             <p><a href="{{ route('pets.index') }}">Cancel edit</a></p>
         @endif
+
+        <h2>Search Pets</h2>
+        <form action="{{ route('pets.index') }}" method="GET" style="margin-bottom: 20px;">
+            <label for="name_filter">Search by Name:</label>
+            <input type="text" name="name_filter" id="name_filter" value="{{ request('name_filter') }}" placeholder="Escribe el nombre para filtrar">
+        </form>
 
         <h2>Pet List</h2>
 
@@ -91,11 +97,11 @@
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody id="petsTableBody">
 
             @foreach($pets as $pet)
 
-                <tr>
+                <tr data-pet-id="{{ $pet->id }}">
                     <td>{{ $pet->name }}</td>
                     <td>{{ $pet->breed }}</td>
                     <td>{{ $pet->age }}</td>
@@ -124,6 +130,22 @@
             </tbody>
 
         </table>
+
+        <script>
+            // JavaScript code to handle the search functionality
+            document.getElementById('name_filter').addEventListener('input', function() {
+                const filterValue = this.value.toLowerCase();
+                const rows = document.querySelectorAll('#petsTableBody tr');
+
+                rows.forEach(row => {
+                    const nameCell = row.querySelector('td:first-child');
+                    if (nameCell) {
+                        const nameText = nameCell.textContent.toLowerCase();
+                        row.style.display = nameText.includes(filterValue) ? '' : 'none';
+                    }
+                });
+            });
+        </script>
 
     </body>
 </html>

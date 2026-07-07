@@ -28,7 +28,7 @@ A Laravel web application for managing a dog grooming salon.
 Clone the repository:
 
 ```bash
-git clone https://github.com/Amorenobegines/PawFlow
+git clone https://github.com/Amorenobegines/PawFlow.git
 ```
 
 Install dependencies:
