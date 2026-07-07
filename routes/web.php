@@ -24,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('pets', PetController::class);
     Route::resource('appointments', AppointmentController::class);
     Route::resource('clients', ClientController::class);
-    Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::resource('users', UserController::class);
 });
 
  
