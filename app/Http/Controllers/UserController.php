@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    public function __construct()
+  /*  public function __construct()
     {
         $this->middleware(function ($request, $next) {
             $user = $request->user();
@@ -19,7 +19,7 @@ class UserController extends Controller
 
             return $next($request);
         });
-    }
+    }*/
 
     public function index(Request $request)
     {

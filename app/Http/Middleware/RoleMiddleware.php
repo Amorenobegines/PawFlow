@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\User; 
 
 class RoleMiddleware
 {
@@ -15,18 +15,13 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
         $user = $request->user();
-
-        if (! $user || $user->role?->name !== 'Administrador') {
-            abort(403, 'Solo el rol Administrador puede administrar usuarios.');
-        } 
-
-        if (! $user || $user->role?->name !== 'Recepcionista') {
-            abort(403, 'Solo el rol Recepcionista puede acceder a esta sección.');
-        }
-
+       // Verificar si el usuario está autenticado y tiene un rol válido
+       if (! $user || ! in_array($user->role?->name, $roles)) {
+           abort(403, 'No tienes permiso para acceder a esta página.');
+       }
         return $next($request);
     }
 }
