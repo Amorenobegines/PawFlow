@@ -13,6 +13,7 @@ class ServiceController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Service::class);
         $services = Service::all();
         return view('services.index', compact('services'));
     }
@@ -22,6 +23,7 @@ class ServiceController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Service::class);
         return view('services.create');
 
     }
@@ -31,6 +33,7 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Service::class);
         $request->validate([
             'name' => 'required',
             'type' => 'required',
@@ -66,9 +69,16 @@ class ServiceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Service $service)
     {
-        $service = Service::findOrFail($id);
+        $this->authorize('update', $service);
+        $request->validate([
+            'name' => 'required',
+            'type' => 'required',
+            'price' => 'required|numeric',
+            'duration' => 'required|integer',
+        ]);
+       
         $service->update($request->only(['name', 'type', 'price', 'duration']));
         return redirect()->route('services.index')->with('success', 'Service updated successfully.');
     }
@@ -78,6 +88,7 @@ class ServiceController extends Controller
      */
     public function destroy(Service $service)
     {
+        $this->authorize('delete', $service);
         $service->delete();
         return redirect()->route('services.index');
     }

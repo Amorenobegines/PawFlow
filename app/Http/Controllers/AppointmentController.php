@@ -17,6 +17,7 @@ class AppointmentController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Appointment::class);
         $clients = Client::with('pets:id,name,client_id')->get();
         $users = User::all();
         $services = Service::all();
@@ -56,6 +57,7 @@ class AppointmentController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('create', Appointment::class);
         $clients = Client::all();
         $selectedClientId = $request->query('client_id');
         $services = Service::all();
@@ -72,6 +74,8 @@ class AppointmentController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Appointment::class);
+
         $request->validate([
             'date' => 'required|date',
             'time' => 'required',
@@ -127,6 +131,7 @@ class AppointmentController extends Controller
      */
     public function update(Request $request, Appointment $appointment)
     {
+        $this->authorize('update', $appointment);
         $request->validate([
             'date' => 'required|date',
             'time' => 'required',
@@ -142,11 +147,25 @@ class AppointmentController extends Controller
         return redirect()->route('appointments.index')->with('success', 'Appointment updated successfully.');
     }
 
+    public function changeStatus(Request $request, Appointment $appointment)
+    {
+        $this->authorize('changeStatus', $appointment);
+        $request->validate([
+            'status' => 'required|in:pending,completed,canceled',
+        ]);
+
+        $appointment->update(['status' => $request->input('status')]);
+
+        return redirect()->route('appointments.index')->with('success', 'Appointment status updated successfully.');
+    }
+
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Appointment $appointment)
-    {
+    { 
+        $this->authorize('delete', $appointment);
         $appointment->delete();
         return redirect()->route('appointments.index')->with('success', 'Appointment deleted successfully.');
     } 

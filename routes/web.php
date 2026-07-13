@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('clients', ClientController::class)->middleware('role:Administrador,Recepcionista');
     Route::resource('users', UserController::class)->middleware('role:Administrador');
     Route::resource('roles', RoleController::class)->middleware('role:Administrador');
+    Route::patch('/appointments/{appointment}/status', [AppointmentController::class, 'changeStatus'])->name('appointments.changeStatus');
 });
 
  

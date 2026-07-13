@@ -14,6 +14,7 @@ class PetController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', Pet::class);
         $pets = Pet::all();
         $clients = Client::all();
         return view('pets.index', compact('pets', 'clients'));
@@ -24,6 +25,7 @@ class PetController extends Controller
      */
     public function create(Request $request)
     {
+        $this->authorize('create', Pet::class);
         $pets = Pet::all();
         $clients = Client::all();
         $selectedClientId = $request->query('client_id');
@@ -36,6 +38,7 @@ class PetController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Pet::class);
         $request->validate([
             'name' => 'required',
             'breed' => 'required',
@@ -74,9 +77,9 @@ class PetController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Pet $pet)
     {
-        $pet = Pet::findOrFail($id);
+        $this->authorize('update', $pet);
 
         $request->validate([
             'name' => 'required',
@@ -101,6 +104,7 @@ class PetController extends Controller
      */
     public function destroy(Pet $pet)
     {
+        $this->authorize('delete', $pet);
         $pet->delete(); 
         return redirect()->route('pets.index')->with('success', 'Pet deleted successfully.');
     }

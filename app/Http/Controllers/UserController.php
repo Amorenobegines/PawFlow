@@ -8,21 +8,11 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-  /*  public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            $user = $request->user();
 
-            if (! $user || $user->role?->name !== 'Administrador') {
-                abort(403, 'Solo el rol Administrador puede administrar usuarios.');
-            }
-
-            return $next($request);
-        });
-    }*/
 
     public function index(Request $request)
     {
+        $this->authorize('viewAny', User::class);
         $query = User::with('role');
 
         if ($request->filled('email_filter')) {
@@ -37,6 +27,7 @@ class UserController extends Controller
 
     public function create()
     {
+        $this->authorize('create', User::class);
         $roles = Role::all();
         $users = User::with('role')->get();
 
@@ -45,6 +36,7 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        $this->authorize('create', User::class);
         $request->validate([
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -73,6 +65,7 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('update', $user);
         $request->validate([
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -94,6 +87,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'Usuario eliminado correctamente.');

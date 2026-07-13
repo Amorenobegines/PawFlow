@@ -12,6 +12,7 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Client::class);
         $query = Client::query();
 
         if ($request->filled('email_filter')) {
@@ -28,6 +29,7 @@ class ClientController extends Controller
      */
     public function create()
     {
+        $this->authorize('create', Client::class);
         $clients = Client::with('pets')->get();
 
         return view('clients.index', compact('clients'));
@@ -38,6 +40,7 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', Client::class);
         $request->validate([
             'name' => 'required',
             'last_name' => 'required',
@@ -101,6 +104,7 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $this->authorize('update', Client::class);
         $client = Client::findOrFail($id);
 
         $request->validate([
@@ -151,6 +155,7 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
+        $this->authorize('delete', Client::class);
         $client = Client::findOrFail($id);
         $client->delete();
 
