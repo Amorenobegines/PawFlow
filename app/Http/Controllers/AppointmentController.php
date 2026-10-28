@@ -9,9 +9,16 @@ use App\Models\Service;
 use App\Models\Pet;
 use App\Models\Client;   
 use App\Models\User;
+use App\Services\AppointmentAvailability;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 
 class AppointmentController extends Controller
 {
+    public function __construct(private AppointmentAvailability $availability)
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -69,6 +76,31 @@ class AppointmentController extends Controller
         return view('appointments.create', compact('clients', 'services', 'pets', 'selectedClientId', 'selectedServiceId', 'selectedPetId', 'users', 'selectedUserId'));
     }
 
+    public function availability(Request $request)
+    {
+        $this->authorize('create', Appointment::class);
+
+        $validated = $request->validate([
+            'date' => ['required', 'date', 'after_or_equal:'.now('Europe/Madrid')->toDateString()],
+            'user_id' => ['required', 'exists:users,id'],
+            'service_ids' => ['required', 'array', 'min:1'],
+            'service_ids.*' => ['required', 'integer', 'distinct', 'exists:services,id'],
+            'appointment_id' => ['nullable', 'integer', 'exists:appointments,id'],
+        ]);
+
+        $unavailableTimes = $this->availability->unavailableTimes(
+            $validated['date'],
+            (int) $validated['user_id'],
+            $validated['service_ids'],
+            isset($validated['appointment_id']) ? (int) $validated['appointment_id'] : null
+        );
+
+        return response()->json([
+            'unavailable_times' => $unavailableTimes,
+            'past_times' => $this->availability->pastTimes($validated['date']),
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -76,18 +108,21 @@ class AppointmentController extends Controller
     {
         $this->authorize('create', Appointment::class);
 
-        $request->validate([
-            'date' => 'required|date',
-            'time' => 'required',
+        $validated = $request->validate([
+            'date' => ['required', 'date', 'after_or_equal:'.now('Europe/Madrid')->toDateString()],
+            'time' => ['required', 'date_format:H:i'],
             'status' => 'required|in:pending,completed,canceled',
             'client_id' => 'required|exists:clients,id',
             'pet_id' => 'required|exists:pets,id',
             'user_id' => 'required|exists:users,id',
-            'service_ids' => 'required|array|exists:services,id',
+            'service_ids' => 'required|array|min:1',
+            'service_ids.*' => 'required|integer|distinct|exists:services,id',
         ]);
 
+        $this->assertSlotAvailable($validated);
+
         $appointment = Appointment::create($request->only(['date', 'time', 'status', 'client_id', 'pet_id', 'user_id']));
-        $appointment->services()->attach($request->input(['service_ids']));
+        $appointment->services()->attach($validated['service_ids']);
 
         return redirect()->route('appointments.index')->with('success', 'Appointment created successfully.');
     }
@@ -132,19 +167,50 @@ class AppointmentController extends Controller
     public function update(Request $request, Appointment $appointment)
     {
         $this->authorize('update', $appointment);
-        $request->validate([
-            'date' => 'required|date',
-            'time' => 'required',
+        $validated = $request->validate([
+            'date' => ['required', 'date', 'after_or_equal:'.now('Europe/Madrid')->toDateString()],
+            'time' => ['required', 'date_format:H:i'],
             'status' => 'required|in:pending,completed,canceled',
             'client_id' => 'required|exists:clients,id',
             'pet_id' => 'required|exists:pets,id',
             'user_id' => 'required|exists:users,id',
-            'service_ids' => 'required|array|exists:services,id',
+            'service_ids' => 'required|array|min:1',
+            'service_ids.*' => 'required|integer|distinct|exists:services,id',
         ]);
 
+        $this->assertSlotAvailable($validated, $appointment);
         $appointment->update($request->only(['date', 'time', 'status', 'client_id', 'pet_id', 'user_id']));
-        $appointment->services()->sync($request->input(['service_ids']));
+        $appointment->services()->sync($validated['service_ids']);
         return redirect()->route('appointments.index')->with('success', 'Appointment updated successfully.');
+    }
+
+    private function assertSlotAvailable(array $validated, ?Appointment $appointment = null): void
+    {
+        if ($validated['status'] === 'canceled') {
+            return;
+        }
+
+        if (Carbon::parse($validated['date'].' '.$validated['time'], 'Europe/Madrid')
+            ->lessThanOrEqualTo(now('Europe/Madrid'))) {
+            throw ValidationException::withMessages([
+                'time' => 'No se puede reservar una hora que ya ha pasado.',
+            ]);
+        }
+
+        if (in_array(
+            $validated['time'],
+            $this->availability->unavailableTimes(
+                $validated['date'],
+                (int) $validated['user_id'],
+                $validated['service_ids'],
+                $appointment?->id
+            ),
+            true
+        )) {
+            throw ValidationException::withMessages([
+                'time' => 'Ese horario se solapa con otra cita del empleado seleccionado.',
+            ]);
+        }
     }
 
     public function changeStatus(Request $request, Appointment $appointment)

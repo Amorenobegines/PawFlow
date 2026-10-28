@@ -104,8 +104,8 @@ class ClientController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->authorize('update', Client::class);
         $client = Client::findOrFail($id);
+        $this->authorize('update', $client);
 
         $request->validate([
             'name' => 'required',
@@ -155,8 +155,8 @@ class ClientController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->authorize('delete', Client::class);
         $client = Client::findOrFail($id);
+        $this->authorize('delete', $client);
         $client->delete();
 
         return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');

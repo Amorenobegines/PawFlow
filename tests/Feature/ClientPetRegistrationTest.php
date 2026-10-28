@@ -60,3 +60,45 @@ it('allows creating a client and pet without a password', function () {
     expect($client->password)->toBeNull();
     expect(Pet::where('client_id', $client->id)->where('name', 'Nina')->exists())->toBeTrue();
 });
+
+it('authorizes updating and deleting a client using the client model', function () {
+    Role::create(['name' => 'Administrador']);
+
+    $user = User::factory()->create();
+    $client = Client::create([
+        'name' => 'Ana',
+        'last_name' => 'García',
+        'phone' => '555123456',
+        'address' => 'Calle 123',
+        'email' => 'ana@example.com',
+    ]);
+    $client->pets()->create([
+        'name' => 'Max',
+        'breed' => 'Labrador',
+        'age' => 3,
+        'weight' => 25,
+        'gender' => 'Male',
+    ]);
+
+    $response = $this->actingAs($user)->put("/clients/{$client->id}", [
+        'name' => 'Ana María',
+        'last_name' => 'García',
+        'phone' => '555123456',
+        'address' => 'Calle 123',
+        'email' => 'ana@example.com',
+        'pet_name' => 'Max',
+        'pet_breed' => 'Labrador',
+        'pet_age' => 3,
+        'pet_weight' => 25,
+        'pet_gender' => 'Male',
+        'pet_allergic' => false,
+    ]);
+
+    $response->assertRedirect(route('clients.index'));
+    expect($client->fresh()->name)->toBe('Ana María');
+
+    $response = $this->actingAs($user)->delete("/clients/{$client->id}");
+
+    $response->assertRedirect(route('clients.index'));
+    expect(Client::find($client->id))->toBeNull();
+});

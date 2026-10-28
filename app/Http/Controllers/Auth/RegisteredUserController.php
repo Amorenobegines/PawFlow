@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Client;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +16,7 @@ use Illuminate\View\View;
 class RegisteredUserController extends Controller
 {
     /**
-     * Display the registration view.
+     * Mostrar el formulario de registro.
      */
     public function create(): View
     {
@@ -24,28 +24,50 @@ class RegisteredUserController extends Controller
     }
 
     /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
+     * Registrar un nuevo cliente.
      */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+
+            'last_name' => ['required', 'string', 'max:255'],
+
+            'phone' => ['required', 'string', 'max:20'],
+
+            'address' => ['required', 'string', 'max:255'],
+
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                'unique:clients,email',
+            ],
+
+            'password' => [
+                'required',
+                'confirmed',
+                Rules\Password::defaults(),
+            ],
         ]);
 
-        $user = User::create([
+        $client = Client::create([
             'name' => $request->name,
+            'last_name' => $request->last_name,
+            'phone' => $request->phone,
+            'address' => $request->address,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
 
-        event(new Registered($user));
+        event(new Registered($client));
 
-        Auth::login($user);
+        Auth::guard('client')->login($client);
 
-        return redirect(route('dashboard', absolute: false));
+        $request->session()->regenerate();
+
+        return redirect()->route('client.dashboard');
     }
 }
