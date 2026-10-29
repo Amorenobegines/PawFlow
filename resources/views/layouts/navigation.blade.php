@@ -116,6 +116,22 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('pets.index')" :active="request()->routeIs('pets.*')">
+                {{ __('Mascotas') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('appointments.index')" :active="request()->routeIs('appointments.*')">
+                {{ __('Citas') }}
+            </x-responsive-nav-link>
+            @can('viewAny', App\Models\Client::class)
+                <x-responsive-nav-link :href="route('clients.index')" :active="request()->routeIs('clients.*')">
+                    {{ __('Clientes') }}
+                </x-responsive-nav-link>
+            @endcan
+            @can('viewAny', App\Models\Service::class)
+                <x-responsive-nav-link :href="route('services.index')" :active="request()->routeIs('services.*')">
+                    {{ __('Servicios') }}
+                </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->

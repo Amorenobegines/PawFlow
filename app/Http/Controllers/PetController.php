@@ -61,7 +61,10 @@ class PetController extends Controller
      */
     public function show(Pet $pet)
     {
-        return view('pet.show', compact('pet'));
+        $this->authorize('view', $pet);
+        $pet->load(['client', 'appointments.services', 'appointments.user']);
+
+        return view('pets.show', compact('pet'));
     }
 
     /**
@@ -69,6 +72,7 @@ class PetController extends Controller
      */
     public function edit(Pet $pet)
     {
+        $this->authorize('update', $pet);
         $pets = Pet::all();
         $clients = Client::all();
         return view('pets.index', compact('pets', 'pet', 'clients'));

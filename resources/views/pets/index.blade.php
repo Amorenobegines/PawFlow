@@ -27,122 +27,131 @@
             $isEdit = isset($pet);
         @endphp
 
-        <!-- Formulario -->
-        <section class="flex justify-center mt-12 mb-10 ">
-            <div class="w-full max-w-xl bg-white shadow-md rounded-xl p-6">
+        @can('create', App\Models\Pet::class)
 
-                <h2 class="text-xl font-semibold text-gray-700 mb-4">
-                    {{ $isEdit ? 'Editar Mascota' : 'Añadir Nueva Mascota' }}
-                </h2>
+            <div>
+                <p class="text-sm font-semibold uppercase tracking-wider text-teal-600">AliCan · Administración</p>
+                <h1 class="mt-1 text-3xl font-bold text-gray-800">Mascotas</h1>
+                <p class="mt-2 text-gray-500">Consulta los datos de las mascotas registradas.</p>
+            </div>
 
-                <form action="{{ $isEdit ? route('pets.update', $pet->id) : route('pets.store') }}" method="POST"
-                    class="space-y-4">
-                    @csrf
+            <!-- Formulario -->
+            <section class="flex justify-center mt-6 mb-6">
+                <div class="w-full max-w-xl bg-white shadow-md rounded-xl p-6">
+
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">
+                        {{ $isEdit ? 'Editar Mascota' : 'Añadir Nueva Mascota' }}
+                    </h2>
+
+                    <form action="{{ $isEdit ? route('pets.update', $pet->id) : route('pets.store') }}" method="POST"
+                        class="space-y-4">
+                        @csrf
+                        @if ($isEdit)
+                            @method('PATCH')
+                        @endif
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            <div>
+                                <label class="text-sm font-medium">Nombre</label>
+                                <input type="text" name="name" value="{{ old('name', $isEdit ? $pet->name : '') }}"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-medium">Raza</label>
+                                <input type="text" name="breed" value="{{ old('breed', $isEdit ? $pet->breed : '') }}"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-medium">Edad</label>
+                                <input type="number" name="age" value="{{ old('age', $isEdit ? $pet->age : '') }}"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-medium">Peso</label>
+                                <input type="number" name="weight" value="{{ old('weight', $isEdit ? $pet->weight : '') }}"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+                                    required>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-medium">Género</label>
+                                <select name="gender"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+                                    required>
+                                    <option value="Male"
+                                        {{ old('gender', $isEdit && $pet->gender === 'Male' ? 'selected' : '') }}>Macho</option>
+                                    <option value="Female"
+                                        {{ old('gender', $isEdit && $pet->gender === 'Female' ? 'selected' : '') }}>Hembra
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="text-sm font-medium">Alérgico</label>
+                                <select name="allergic"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+                                    required>
+                                    <option value="0"
+                                        {{ old('allergic', $isEdit && $pet->allergic == 0 ? 'selected' : '') }}>No</option>
+                                    <option value="1"
+                                        {{ old('allergic', $isEdit && $pet->allergic == 1 ? 'selected' : '') }}>Sí</option>
+                                </select>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="text-sm font-medium">Observaciones</label>
+                                <textarea name="observations"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500">{{ old('observations', $isEdit ? $pet->observations : '') }}</textarea>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="text-sm font-medium">Cliente</label>
+                                <select name="client_id"
+                                    class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
+                                    required>
+                                    @foreach ($clients as $client)
+                                        <option value="{{ $client->id }}"
+                                            {{ old('client_id', $isEdit ? $pet->client_id : '') == $client->id ? 'selected' : '' }}>
+                                            {{ $client->name }} {{ $client->last_name }} ({{ $client->email }})
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <div class="pt-4">
+                            @if ($isEdit)
+                                <button type="submit"
+                                    class="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-md shadow-md">
+                                    Actualizar Mascota
+                                </button>
+                            @else
+                                <button type="submit"
+                                    class="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-md shadow-md">
+                                    Añadir Mascota
+                                </button>
+                            @endif
+                        </div>
+                    </form>
+
                     @if ($isEdit)
-                        @method('PATCH')
+                        <a href="{{ route('pets.index') }}"
+                            class="text-sm text-gray-600 hover:text-teal-600 mt-4 inline-block">
+                            Cancelar edición
+                        </a>
                     @endif
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                        <div>
-                            <label class="text-sm font-medium">Nombre</label>
-                            <input type="text" name="name" value="{{ old('name', $isEdit ? $pet->name : '') }}"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-                                required>
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium">Raza</label>
-                            <input type="text" name="breed" value="{{ old('breed', $isEdit ? $pet->breed : '') }}"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-                                required>
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium">Edad</label>
-                            <input type="number" name="age" value="{{ old('age', $isEdit ? $pet->age : '') }}"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-                                required>
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium">Peso</label>
-                            <input type="number" name="weight" value="{{ old('weight', $isEdit ? $pet->weight : '') }}"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-                                required>
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium">Género</label>
-                            <select name="gender"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-                                required>
-                                <option value="Male"
-                                    {{ old('gender', $isEdit && $pet->gender === 'Male' ? 'selected' : '') }}>Macho</option>
-                                <option value="Female"
-                                    {{ old('gender', $isEdit && $pet->gender === 'Female' ? 'selected' : '') }}>Hembra
-                                </option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="text-sm font-medium">Alérgico</label>
-                            <select name="allergic"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-                                required>
-                                <option value="0"
-                                    {{ old('allergic', $isEdit && $pet->allergic == 0 ? 'selected' : '') }}>No</option>
-                                <option value="1"
-                                    {{ old('allergic', $isEdit && $pet->allergic == 1 ? 'selected' : '') }}>Sí</option>
-                            </select>
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <label class="text-sm font-medium">Observaciones</label>
-                            <textarea name="observations"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500">{{ old('observations', $isEdit ? $pet->observations : '') }}</textarea>
-                        </div>
-
-                        <div class="md:col-span-2">
-                            <label class="text-sm font-medium">Cliente</label>
-                            <select name="client_id"
-                                class="w-full border-gray-300 rounded-md px-3 py-2 focus:ring-teal-500 focus:border-teal-500"
-                                required>
-                                @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}"
-                                        {{ old('client_id', $isEdit ? $pet->client_id : '') == $client->id ? 'selected' : '' }}>
-                                        {{ $client->name }} {{ $client->last_name }} ({{ $client->email }})
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                    </div>
-
-                    <div class="pt-4">
-                        @if ($isEdit)
-                            <button type="submit"
-                                class="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-md shadow-md">
-                                Actualizar Mascota
-                            </button>
-                        @else
-                            <button type="submit"
-                                class="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded-md shadow-md">
-                                Añadir Mascota
-                            </button>
-                        @endif
-                    </div>
-                </form>
-
-                @if ($isEdit)
-                    <a href="{{ route('pets.index') }}"
-                        class="text-sm text-gray-600 hover:text-teal-600 mt-4 inline-block">
-                        Cancelar edición
-                    </a>
-                @endif
-
-            </div>
-        </section>
+                </div>
+            </section>
+        @endcan
 
 
         <!-- Buscador -->
@@ -201,6 +210,13 @@
 
                                 <td class="whitespace-nowrap px-4 py-2">
                                     <div class="flex min-w-max flex-nowrap items-center gap-2">
+                                        @can('view', $pet)
+                                            <a href="{{ route('pets.show', $pet->id) }}"
+                                                class="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-pink-50 px-3 py-2 text-xs font-semibold text-pink-700 transition hover:bg-pink-100">
+                                                <i class="fa-solid fa-eye mr-1.5"></i>Ficha
+                                            </a>
+                                        @endcan
+
                                         @can('update', $pet)
                                             <a href="{{ route('pets.edit', $pet->id) }}"
                                                 class="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-teal-50 px-3 py-2 text-xs font-semibold text-teal-700 transition hover:bg-teal-100">

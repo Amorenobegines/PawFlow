@@ -132,6 +132,9 @@ class AppointmentController extends Controller
      */
     public function show(Appointment $appointment)
     {
+        $this->authorize('view', $appointment);
+        $appointment->load(['client', 'pet', 'services', 'user']);
+
         return view('appointments.show', compact('appointment'));
     }
 
@@ -140,8 +143,9 @@ class AppointmentController extends Controller
      */
     public function edit(String $id)
     {
-        $appointments = Appointment::with(['client', 'pet', 'services', 'user'])->get();
         $appointment = Appointment::with(['client', 'pet', 'services', 'user'])->findOrFail($id);
+        $this->authorize('update', $appointment);
+        $appointments = Appointment::with(['client', 'pet', 'services', 'user'])->get();
         $clients = Client::with('pets:id,name,client_id')->get();
         $services = Service::all();
         $pets = Pet::where('client_id', $appointment->client_id)->select('id', 'name', 'client_id')->get();

@@ -5,7 +5,7 @@
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <p class="text-sm font-semibold uppercase tracking-wider text-teal-600 mt-6">AliCan · Administración</p>
+                <p class="text-sm font-semibold uppercase tracking-wider text-teal-600">AliCan · Administración</p>
                 <h1 class="mt-1 text-3xl font-bold text-gray-800">Clientes</h1>
                 <p class="mt-2 text-gray-500">Consulta los datos de contacto y la información de sus mascotas.</p>
             </div>

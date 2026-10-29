@@ -16,7 +16,7 @@
 
     <!-- ================= CONTENIDO ================= -->
 
-    <div class="relative z-10 max-w-6xl mx-auto px-6 pt-14 pb-24">
+    <div class="relative z-10 max-w-6xl mx-auto px-4 pt-8 pb-12">
 
         <div class="grid gap-12 items-start" style="grid-template-columns: repeat(4, minmax(0, 1fr));">
 
@@ -114,19 +114,19 @@
                     <div class="space-y-4 text-sm">
 
                         <a href="https://www.instagram.com/loimaginariodearya?xtok=c2RxcDA0ZTE4dDQ=" title="Instagram"
-                            class="w-9 h-9 rounded-full bg-white border border-teal-100
+                            class="w-12 h-12 rounded-full bg-white border border-teal-100
                                    flex items-center justify-center hover:bg-pink-100 hover:text-pink-500 transition">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
 
                         <a href="https://www.facebook.com/profile.php?id=100046841806827" title="Facebook"
-                            class="w-9 h-9 rounded-full bg-white border border-teal-100
+                            class="w-12 h-12 rounded-full bg-white border border-teal-100
                                    flex items-center justify-center hover:bg-blue-100 hover:text-blue-500 transition">
                             <i class="fa-brands fa-facebook"></i>
                         </a>
 
                         <a href="https://wa.me/34660314322" title="WhatsApp"
-                            class="w-9 h-9 rounded-full bg-white border border-teal-100
+                            class="w-12 h-12 rounded-full bg-white border border-teal-100
                                    flex items-center justify-center hover:bg-green-100 hover:text-green-500 transition">
                             <i class="fa-brands fa-whatsapp"></i>
                         </a>
@@ -138,7 +138,7 @@
             </div>
 
             <!-- ================= SEPARADOR ================= -->
-            <div class="relative z-20 border-t border-teal-200 mt-12 pt-6">
+            <div class="relative z-20 border-t border-teal-200">
                 <div class="flex justify-between items-center text-xs text-gray-400">
                     <p>© {{ date('Y') }} AliCan</p>
                     <p>Peluquería Canina · Dos Hermanas (Sevilla)</p>

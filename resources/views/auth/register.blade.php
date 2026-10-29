@@ -78,7 +78,8 @@
                 <div>
                     <label for="phone" class="block text-sm font-medium text-gray-600 mb-1">Teléfono</label>
                     <input id="phone" type="tel" name="phone" value="{{ old('phone') }}" required
-                        autocomplete="tel" placeholder="Tu teléfono"
+                        autocomplete="tel" inputmode="numeric" minlength="9" maxlength="9" pattern="[0-9]{9}"
+                        placeholder="Tu teléfono"
                         class="w-full px-4 py-3 bg-white text-gray-700 border border-gray-200 rounded-xl focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                     @error('phone')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -109,11 +110,12 @@
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-600 mb-1">Contraseña</label>
                     <input id="password" type="password" name="password" required autocomplete="new-password"
-                        placeholder="Crea una contraseña"
+                        minlength="8" placeholder="Mínimo 8 caracteres"
                         class="w-full px-4 py-3 bg-white text-gray-700 border border-gray-200 rounded-xl focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition">
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
+                    <p class="mt-1 text-xs text-gray-500">Incluye mayúsculas, minúsculas y al menos un símbolo.</p>
                 </div>
 
                 <div>

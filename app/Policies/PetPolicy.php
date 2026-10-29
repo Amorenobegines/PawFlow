@@ -13,7 +13,7 @@ class PetPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasRole('Administrador', 'Recepcionista', 'Empleado');
     }
 
     /**
@@ -21,7 +21,7 @@ class PetPolicy
      */
     public function view(User $user, Pet $pet): bool
     {
-        return true;
+        return $user->hasRole('Administrador', 'Recepcionista', 'Empleado');
     }
 
     /**

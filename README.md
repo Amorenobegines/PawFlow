@@ -5,7 +5,7 @@ A Laravel web application for managing a dog grooming salon.
 ## Features
 
 - Authentication (Login & Register)
-- Role management (Admin / Employee)
+- Role management (Admin / Receptionist / Employee)
 - Client management
 - Pet management
 - Service management
@@ -13,9 +13,14 @@ A Laravel web application for managing a dog grooming salon.
 - Full CRUD operations
 - MySQL database
 
+## Staff roles
+
+- **Receptionist:** manages clients, creates and edits appointments, consults the schedule, and changes appointment statuses.
+- **Employee:** consults the schedule and pet records, and changes appointment statuses (`pending`, `completed`, `canceled`).
+
 ## Technologies
 
-- Laravel 12
+- Laravel 13
 - PHP 8.3
 - MySQL
 - Blade

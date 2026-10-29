@@ -8,7 +8,8 @@
 
                 <div class="relative flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
                     <div>
-                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#ffc6ae]">AliCan · Panel de gestión</p>
+                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-[#ffc6ae]">AliCan · Panel de
+                            gestión</p>
                         <h1 class="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl text-[#ffc6ae]">
                             ¡Hola, {{ Auth::user()->name }}!
                         </h1>

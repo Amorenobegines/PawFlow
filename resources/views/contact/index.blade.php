@@ -6,7 +6,7 @@
         </div>
     </x-slot>
 
-    <div class="bg-gradient-to-b from-teal-50/70 to-gray-50 py-10 sm:py-14 mb-6 mt-6">
+    <div class="bg-gradient-to-b from-teal-50/70 to-gray-50 py-10 sm:py-14 ">
         <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 ">
             <section class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-gray-100 mb-6">
                 <div class="grid lg:grid-cols-2 ">
@@ -40,7 +40,7 @@
                     </div>
 
                     <div
-                        class="relative min-h-64 bg-gradient-to-br from-teal-100 via-pink-50 to-pink-100 p-8 sm:p-10 lg:min-h-full mt-6">
+                        class="relative min-h-64 bg-gradient-to-br from-teal-100 via-pink-50 to-pink-100 p-8 sm:p-10 lg:min-h-full ">
                         <div class="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-white/40"></div>
                         <div class="absolute -bottom-12 -left-8 h-48 w-48 rounded-full bg-teal-200/30"></div>
                         <div
@@ -57,7 +57,7 @@
                 </div>
             </section>
 
-            <section class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <section class=" grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 <a href="tel:+34612345678"
                     class="group rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
                     <span

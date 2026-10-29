@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
 
             'last_name' => ['required', 'string', 'max:255'],
 
-            'phone' => ['required', 'string', 'max:20'],
+            'phone' => ['required', 'string', 'digits:9'],
 
             'address' => ['required', 'string', 'max:255'],
 
@@ -49,7 +49,7 @@ class RegisteredUserController extends Controller
             'password' => [
                 'required',
                 'confirmed',
-                Rules\Password::defaults(),
+                Rules\Password::min(8)->mixedCase()->symbols(),
             ],
         ]);
 
